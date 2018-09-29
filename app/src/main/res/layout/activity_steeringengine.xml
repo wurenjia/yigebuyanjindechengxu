@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SteeringengineActivity"
+    tools:layout_editor_absoluteY="25dp">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="舵机2" />
+
+        <SeekBar
+            android:id="@+id/nl_steeringengine2_SB_sgg"
+            android:layout_width="192dp"
+            android:layout_height="28dp"
+            android:layout_weight="1"
+            android:max="180"
+            android:progress="90"
+            tools:layout_editor_absoluteX="84dp"
+            tools:layout_editor_absoluteY="148dp" />
+
+        <TextView
+            android:id="@+id/nl_steeringengine2_TV_sgg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="50" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="69dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="舵机1" />
+
+        <SeekBar
+            android:id="@+id/nl_steeringengine1_SB_sgg"
+            android:layout_width="192dp"
+            android:layout_height="27dp"
+            android:layout_weight="1"
+            android:max="180"
+            android:progress="90"
+            tools:layout_editor_absoluteX="107dp"
+            tools:layout_editor_absoluteY="38dp" />
+
+        <TextView
+            android:id="@+id/nl_steeringengine1_TV_sgg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="50" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/sggSetting_btn_SGG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text=" 设置"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+</android.support.constraint.ConstraintLayout>

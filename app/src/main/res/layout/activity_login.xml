@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity"
+    tools:layout_editor_absoluteY="25dp">
+
+    <EditText
+        android:id="@+id/account_et_lg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="36dp"
+        android:layout_marginTop="77dp"
+        android:ems="10"
+        android:hint="账号："
+        android:inputType="textPersonName"
+        android:text="18307364856"
+        app:layout_constraintBottom_toTopOf="@+id/password_et_lg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/password_et_lg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="41dp"
+        android:ems="10"
+        android:hint="密码："
+        android:inputType="textPassword"
+        android:text="523816028"
+        app:layout_constraintBottom_toTopOf="@+id/login_btn_lg"
+        app:layout_constraintStart_toStartOf="@+id/account_et_lg"
+        app:layout_constraintTop_toBottomOf="@+id/account_et_lg" />
+
+    <Button
+        android:id="@+id/login_btn_lg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:text="登  录"
+        app:layout_constraintBottom_toTopOf="@+id/getdata_tv_lg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_et_lg" />
+
+    <TextView
+        android:id="@+id/getdata_tv_lg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
+        android:text="TextView"
+        android:scrollbars="horizontal"
+        android:fadeScrollbars="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_btn_lg" />
+</android.support.constraint.ConstraintLayout>
