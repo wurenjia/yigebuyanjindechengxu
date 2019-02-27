@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -36,7 +38,7 @@ public class CommonMethodActivity extends AppCompatActivity {
     public String apiTag_temp = "nl_temperature";
     public String apiTag_weighing = "nl_weighing";
     public String apiTag_light = "nl_light";
-    /*******************************************Intent界面切换**********************************************/
+    /*******************************************Intent界面切换,并传递AccessToken值**********************************************/
     public void changeUI(Context fromActivyty , Class toActivity,String Accesstoken){
         Intent intent = new Intent(fromActivyty ,toActivity);
         intent.putExtra("Accesstoken",Accesstoken);
@@ -440,5 +442,54 @@ public class CommonMethodActivity extends AppCompatActivity {
         Log.d("当前日期时间",""+simpleDateFormat.format(date));
         return simpleDateFormat.format(date);
     }
+    /*******************************************延时（毫秒|非线程）***********************************************************/
+    public void delay(final long mills){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(mills);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    /*******************************************设置数字显示随拖动改变***********************************************************/
+    void changeTVDataWithSeekBar(SeekBar sb1, SeekBar sb2, final TextView sb1_tv, final TextView sb2_tv){
+        sb1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                sb1_tv.setText(progress+"");
+                Log.d("progress_1",progress+"");
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        sb2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                sb2_tv.setText(progress+"");
+                Log.d("progress_2",progress+"");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
 }

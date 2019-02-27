@@ -1,5 +1,26 @@
 package com.example.administrator.ourlovehut;
-
+/**                           _ooOoo_
+ //                           o8888888o
+ //                           88" . "88
+ //                           (| -_- |)
+ //                            O\ = /O
+ //                        ____/`---'\____
+ //                      .   ' \\| |// `.
+ //                       / \\||| : |||// \
+ //                     / _||||| -:- |||||- \
+ //                       | | \\\ - /// | |
+ //                     | \_| ''\---/'' | |
+ //                      \ .-\__ `-` ___/-. /
+ //                   ___`. .' /--.--\ `. . __
+ //                ."" '< `.___\_<|>_/___.' >'"".
+ //               | | : `- \`.;`\ _ /`;.`/ - ` : | |
+ //                 \ \ `-. \_ __\ /__ _/ .-` / /
+ //         ======`-.____`-.___\_____/___.-`____.-'======
+ //                            `=---='
+ //
+ //         .............................................
+ //                  佛祖保佑             永无BUG
+ */
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +44,8 @@ import org.litepal.crud.LitePalSupport;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
@@ -132,7 +155,7 @@ public class MainActivity extends CommonMethodActivity {
             public void onClick(View v) {
                 if(isOpenFengshan){
                     fengshanOpen();
-                    isOpenFengshan = false;
+                    autoControl_btn_main_Code = 0;//关闭自动控制
                 }else{
                     Toast.makeText(MainActivity.this, "设备已经开启，请不要重复点击", Toast.LENGTH_SHORT).show();
                 }
@@ -143,7 +166,8 @@ public class MainActivity extends CommonMethodActivity {
             public void onClick(View v) {
                 if(!isOpenFengshan){
                     fengshanClose();
-                    isOpenFengshan = true;
+                    autoControl_btn_main_Code = 0;//关闭自动控制
+//                    isOpenFengshan = true;
                 }else{
                     Toast.makeText(MainActivity.this, "设备已经关闭，请不要重复点击", Toast.LENGTH_SHORT).show();
                 }
@@ -170,14 +194,10 @@ public class MainActivity extends CommonMethodActivity {
             if(temp_now_main<temp_max_main && temp_now_main>temp_min_main){
                 if(!isOpenFengshan){
                     fengshanClose();
-                    isOpenFengshan = true;
-                    Log.d("风扇开关","关闭");
                 }
             }else{
                 if(isOpenFengshan){
                     fengshanOpen();
-                    isOpenFengshan = false;
-                    Log.d("风扇开关","开启");
                 }
             }
         }
@@ -189,6 +209,7 @@ public class MainActivity extends CommonMethodActivity {
         contorlFengshanByPost("1");//向平台请求开启风扇
         if(fengshanCodeFromClund.equals("0")){
             fengshan_gif_main.setImageResource(R.drawable.fengshan004);//风扇转动
+            isOpenFengshan = false;
         }else {
             Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
         }
@@ -198,6 +219,8 @@ public class MainActivity extends CommonMethodActivity {
         contorlFengshanByPost("0");//向平台请求关闭风扇
         if(fengshanCodeFromClund.equals("0")){
             fengshan_gif_main.setImageResource(R.drawable.fengshan02);//风扇静止
+            isOpenFengshan = true;
+            Log.d("风扇开关","关闭");
         }else {
             Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
         }
@@ -228,7 +251,9 @@ public class MainActivity extends CommonMethodActivity {
                         Gson gson = new Gson();
                         java.lang.reflect.Type type = new TypeToken<JsonData_DevicesSensors_chuang>() {}.getType();
                         JsonData_DevicesSensors_chuang jsonData_devicesSensors = gson.fromJson(resultData,type);
-                        temp_now_main = (Double) jsonData_devicesSensors.getResultObj().getValue();
+                        if(jsonData_devicesSensors.getResultObj().getValue() != null) {
+                            temp_now_main = (Double) jsonData_devicesSensors.getResultObj().getValue();
+                        }
                     }
                     response.close();
                     Thread.sleep(3000);
@@ -258,6 +283,7 @@ public class MainActivity extends CommonMethodActivity {
                         Gson gson = new Gson();
                         java.lang.reflect.Type type = new TypeToken<JsonData_DevicesSensors_zhixin>() {}.getType();
                         JsonData_DevicesSensors_zhixin jsonData_devicesSensors_zhixin = gson.fromJson(resultData,type);
+                        if(jsonData_devicesSensors_zhixin.getResultObj().getValue() !=0)
                         fengshanState = String.valueOf(jsonData_devicesSensors_zhixin.getResultObj().getValue());
                         Log.d("fengshanState", String.valueOf(fengshanState));
                         Thread.sleep(3000);
@@ -276,11 +302,15 @@ public class MainActivity extends CommonMethodActivity {
     //控制风扇设备
     void contorlFengshanByPost(String cmdsCode){
         sendDataWithOkHttpPost("Cmds",accessTokenData_main,cmdsCode,deviceId,apiTag_fengshan);
-        new Thread(new Runnable() {
+        call.enqueue(new Callback() {
             @Override
-            public void run() {
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
                 try {
-                    Response response = call.execute();
                     if (response.body() != null) {
                         resultData = response.body().string();
                         Log.d("fengshan",resultData);
@@ -295,8 +325,10 @@ public class MainActivity extends CommonMethodActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             }
-        }).start();
+        });
+
     }
 
     //handler类，线程更新

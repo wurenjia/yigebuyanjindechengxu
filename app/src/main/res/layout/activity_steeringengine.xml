@@ -9,13 +9,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
+        android:layout_width="384dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+        tools:layout_editor_absoluteY="115dp">
 
         <TextView
             android:id="@+id/textView2"
@@ -44,13 +41,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
+        android:layout_width="384dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="69dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:layout_editor_absoluteY="69dp">
 
         <TextView
             android:id="@+id/textView10"
@@ -81,9 +75,27 @@
         android:id="@+id/sggSetting_btn_SGG"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:text=" 设置"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        tools:layout_editor_absoluteX="68dp"
+        tools:layout_editor_absoluteY="188dp" />
+
+    <Button
+        android:id="@+id/sggNowState_btn_SGG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="当前状态"
+        tools:layout_editor_absoluteX="199dp"
+        tools:layout_editor_absoluteY="188dp" />
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:easyliu="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/relativeLayout"
+        android:layout_width="384dp"
+        android:layout_height="567dp"
+        tools:context="com.easyliu.demo.customizeview.RoundProgressBarActivity">
+
+
+    </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>

@@ -1,5 +1,26 @@
 package com.example.administrator.ourlovehut;
-
+/**                            _ooOoo_
+ //                           o8888888o
+ //                           88" . "88
+ //                           (| -_- |)
+ //                            O\ = /O
+ //                        ____/`---'\____
+ //                      .   ' \\| |// `.
+ //                       / \\||| : |||// \
+ //                     / _||||| -:- |||||- \
+ //                       | | \\\ - /// | |
+ //                     | \_| ''\---/'' | |
+ //                      \ .-\__ `-` ___/-. /
+ //                   ___`. .' /--.--\ `. . __
+ //                ."" '< `.___\_<|>_/___.' >'"".
+ //               | | : `- \`.;`\ _ /`;.`/ - ` : | |
+ //                 \ \ `-. \_ __\ /__ _/ .-` / /
+ //         ======`-.____`-.___\_____/___.-`____.-'======
+ //                            `=---='
+ //
+ //         .............................................
+ //                  佛祖保佑             永无BUG
+ */
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Handler;
@@ -17,6 +38,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 
 public class SteeringengineActivity extends CommonMethodActivity {
@@ -30,10 +53,13 @@ public class SteeringengineActivity extends CommonMethodActivity {
     TextView nl_steeringengine2_TV_sgg;
     //定义按钮
     Button sggSetting_btn_SGG;
+    Button sggNowState_btn_SGG;
     //舵机放回数据
     String resultData = "";
     String isSendOk = "";
+    int sggState;
     int sggState_sgg1;
+    int sggState_sgg2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +70,7 @@ public class SteeringengineActivity extends CommonMethodActivity {
         nl_steeringengine2_TV_sgg = findViewById(R.id.nl_steeringengine2_TV_sgg);
 
         sggSetting_btn_SGG = findViewById(R.id.sggSetting_btn_SGG);
+        sggNowState_btn_SGG = findViewById(R.id.sggNowState_btn_SGG);
         /************************************************显示进度*************************************************/
         nl_steeringengine1_TV_sgg.setText(String.valueOf(nl_steeringengine1_SB_sgg.getProgress()));
         nl_steeringengine2_TV_sgg.setText(String.valueOf(nl_steeringengine2_SB_sgg.getProgress()));
@@ -53,63 +80,45 @@ public class SteeringengineActivity extends CommonMethodActivity {
         Log.d("accessTokenData_SGG",accessTokenData_SGG);
         /************************************************控制事件*************************************************/
         //获取舵机状态
-        getSGGStateFromClound(apiTag_duoji1);
-//        getSGGStateFromClound(apiTag_duoji2);
-        changeTVDataWithSeekBar();//设置数字显示随拖动改变
+        IntSGGState();
+        changeTVDataWithSeekBar(nl_steeringengine1_SB_sgg,nl_steeringengine2_SB_sgg
+                ,nl_steeringengine1_TV_sgg,nl_steeringengine2_TV_sgg);//设置数字显示随拖动改变
         contorlSGGBtn();//控制舵机
     }
 /////////////////////////////////////////////////onCreate结束///////////////////////////////////////////////////////////////////
-    //设置数字显示随拖动改变
-    void changeTVDataWithSeekBar(){
-        nl_steeringengine1_SB_sgg.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                nl_steeringengine1_TV_sgg.setText(progress+"");
-                Log.d("progress_1",progress+"");
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
 
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        nl_steeringengine2_SB_sgg.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                nl_steeringengine2_TV_sgg.setText(progress+"");
-                Log.d("progress_2",progress+"");
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-    }
     //设置按钮
      void contorlSGGBtn(){
         sggSetting_btn_SGG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contorlSGGToClound(nl_steeringengine1_TV_sgg.getText().toString(),apiTag_duoji1);
-                contorlSGGToClound(nl_steeringengine2_TV_sgg.getText().toString(),apiTag_duoji2);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        contorlSGGToClound(nl_steeringengine1_TV_sgg.getText().toString(),apiTag_duoji1);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        contorlSGGToClound(nl_steeringengine2_TV_sgg.getText().toString(),apiTag_duoji2);
+                    }
+                }).start();
+
+            }
+        });
+        sggNowState_btn_SGG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntSGGState();
             }
         });
      }
 
     //发送舵机控制码
     void contorlSGGToClound(String cmdsCode, final String apiTag){
-        sendDataWithOkHttpPost("Cmds",accessTokenData_SGG,cmdsCode,deviceId,apiTag);
+        sendDataWithOkHttpPost("Cmds",accessTokenData_SGG,"\""+cmdsCode+"\"",deviceId,apiTag);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -134,15 +143,25 @@ public class SteeringengineActivity extends CommonMethodActivity {
             }
         }).start();
     }
+    void IntSGGState(){
+        getSGGStateFromClound(apiTag_duoji1);
+        delay(1000);
+        getSGGStateFromClound(apiTag_duoji2);
+
+    }
     //获取舵机状态
     void getSGGStateFromClound(final String apiTag){
         getDataWithOkHttpGet("devices/"+deviceId+"/Sensors/"+apiTag,accessTokenData_SGG);
-        new Thread(new Runnable() {
+        call.enqueue(new Callback() {
             @Override
-            public void run() {
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
                 try {
                     Thread.sleep(1000);
-                    Response response = call.execute();
                     if (response.body() != null) {
                         resultData = response.body().string();
                         Log.d("sggResult",resultData);
@@ -151,20 +170,28 @@ public class SteeringengineActivity extends CommonMethodActivity {
                         java.lang.reflect.Type type = new TypeToken<JsonData_DevicesSensors_zhixin>() {}.getType();
                         JsonData_DevicesSensors_zhixin jsonData_devicesSensors_zhixin = gson.fromJson(resultData,type);
 
-                        sggState_sgg1 =  jsonData_devicesSensors_zhixin.getResultObj().getValue();
-                        Log.d("sggState_sgg1"+apiTag, String.valueOf(sggState_sgg1));
-                        Thread.sleep(1000);
-                        Message message = new Message();
-                        message.what = 0x04;
-                        handler.sendMessage(message);
+                        sggState =  jsonData_devicesSensors_zhixin.getResultObj().getValue();
+                        Log.d("sggState"+apiTag, String.valueOf(sggState));
+                        if(apiTag.equals(apiTag_duoji1)){
+                            sggState_sgg1 = sggState;
+                            Log.d("apiTag_duoji1",sggState+""+apiTag);
+                        }else if(apiTag.equals(apiTag_duoji2)){
+                            sggState_sgg2 = sggState;
+                            Log.d("apiTag_duoji2",sggState+""+apiTag);
+                            Message message = new Message();
+                            message.what = 0x04;
+                            handler.sendMessage(message);
+                        }
+                        Thread.sleep(2000);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
             }
-        }).start();
+        });
     }
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler(){
@@ -178,8 +205,15 @@ public class SteeringengineActivity extends CommonMethodActivity {
                 case  0x04:
                     nl_steeringengine1_SB_sgg.setProgress(sggState_sgg1);
                     nl_steeringengine1_TV_sgg.setText(sggState_sgg1 +"");
-                    Log.d("sggState_TV", String.valueOf(sggState_sgg1));
-                    getSGGStateFromClound(apiTag_duoji1);
+                    Log.d("sggState_sgg1_TV001", String.valueOf(sggState_sgg1));
+                    nl_steeringengine2_SB_sgg.setProgress(sggState_sgg2);
+                    nl_steeringengine2_TV_sgg.setText(sggState_sgg2 +"");
+                    Log.d("sggState_sgg2_TV001", String.valueOf(sggState_sgg2));
+//                    IntSGGState();
+
+                    break;
+                case 0x05:
+
                     break;
             }
         }
